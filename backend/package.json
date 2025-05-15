@@ -1,7 +1,7 @@
 {
   "name": "roof-intelligence",
   "version": "1.0.0",
-  "main": "advancedServer.js",
+  "main": "server.js",
   "scripts": {
     "start": "node advancedServer.js",
     "dev": "nodemon advancedServer.js"
