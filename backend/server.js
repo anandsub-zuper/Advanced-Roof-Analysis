@@ -5,7 +5,7 @@ const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.ADVANCED_PORT || 3002; // Use different port from main server
+const PORT = process.env.PORT || 3002; // Use different port from main server
 
 // Configure CORS to allow requests from your Netlify domain
 app.use(cors({
