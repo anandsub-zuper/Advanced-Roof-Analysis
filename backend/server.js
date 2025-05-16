@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3002; // Use different port from main server
 
 // Configure CORS to allow requests from your Netlify domain
 app.use(cors({
-  origin: 'https://roof-shingle-analyzer.netlify.app',
+  origin: '*',
   methods: ['POST', 'GET', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
