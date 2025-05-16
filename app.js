@@ -191,6 +191,9 @@ async function analyzeRoof() {
         
         const data = await response.json();
         
+        // Log the raw response
+        console.log('Raw API Response:', data);
+        
         // Process and display results
         displayResults(data);
         
@@ -218,31 +221,54 @@ function fileToBase64(file) {
 }
 
 function displayResults(data) {
+    console.log('Raw API Response:', data);
+    
     // Extract the JSON content from the response
     let resultJson;
     try {
-        const content = data.choices[0].message.content;
-        // Check if the content is a string and try to parse JSON from it
-        if (typeof content === 'string') {
-            // Try to find JSON content within the string
-            const jsonMatch = content.match(/\{[\s\S]*\}/);
-            if (jsonMatch) {
-                resultJson = JSON.parse(jsonMatch[0]);
-            } else {
-                resultJson = { error: "Could not parse JSON from response" };
-            }
-        } else if (data.parsedResults) {
-            // Use already parsed results if available
+        // First try to use parsedResults if available
+        if (data.parsedResults) {
             resultJson = data.parsedResults;
+        } 
+        // Then try to access the content directly
+        else if (data.choices && data.choices[0] && data.choices[0].message) {
+            const content = data.choices[0].message.content;
+            
+            // Check if the content is a string and try to parse JSON from it
+            if (typeof content === 'string') {
+                // Look for JSON anywhere in the string
+                const jsonMatch = content.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    resultJson = JSON.parse(jsonMatch[0]);
+                } else {
+                    // If no JSON is found, create a basic object with the content
+                    resultJson = { 
+                        responseText: content,
+                        error: "No JSON structure found in response"
+                    };
+                    
+                    // Show the raw text in the JSON panel
+                    document.getElementById('json').textContent = content;
+                    return;
+                }
+            } else {
+                resultJson = { error: "Response content is not a string" };
+            }
         } else {
-            resultJson = { error: "Unexpected response format" };
+            // Just display whatever we got as-is
+            resultJson = data;
         }
     } catch (error) {
         console.error('Error parsing results:', error);
         resultJson = { 
             error: "Failed to parse analysis results",
-            rawResponse: data
+            errorDetails: error.message,
+            rawResponse: JSON.stringify(data)
         };
+        
+        // Show the raw response in the JSON panel
+        document.getElementById('json').textContent = JSON.stringify(data, null, 2);
+        return;
     }
     
     // Display raw JSON
