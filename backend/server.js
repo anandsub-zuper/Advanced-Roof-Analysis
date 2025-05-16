@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3002;
 
 // Configure CORS to allow requests from your GitHub Pages domain
 app.use(cors({
-  origin: ['*'],
+  origin: '*',
   methods: ['POST', 'GET', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
