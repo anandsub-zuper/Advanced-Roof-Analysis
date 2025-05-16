@@ -503,35 +503,22 @@ Ensure the entire response is properly formatted as valid JSON.
       });
     });
     
-    // Create the OpenAI API request payload
-      const payload = {
-    model: "gpt-4o",
-    messages: [
-      {
-        role: "system",
-        content: enhancedSystemPrompt
-      },
-      {
-        role: "user",
-        content: [
-          {
-            type: "text",
-            text: userPrompt
-          },
-          // Add all images to the content array
-          ...processedImages.map(image => ({
-            type: "image_url",
-            image_url: {
-              url: `data:image/jpeg;base64,${image}`,
-              detail: "high"
-            }
-          }))
-        ]
-      }
-    ],
-    max_tokens: 3000,
-    temperature: 0.2
-  };
+   // Create the OpenAI API request payload
+const payload = {
+  model: "gpt-4o",
+  messages: [
+    {
+      role: "system",
+      content: enhancedSystemPrompt
+    },
+    {
+      role: "user",
+      content: contentArray  // Use your existing contentArray that already includes text and images
+    }
+  ],
+  max_tokens: 3000,
+  temperature: 0.2
+};
     
     // Call the OpenAI API with extended timeout
     try {
