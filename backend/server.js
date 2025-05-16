@@ -274,44 +274,82 @@ ENSURE ALL CALCULATIONS are consistent and adhere to these formulas precisely. F
 Ensure the entire response is properly formatted as valid JSON.
 `;
 
-    // Create the content array with all images
-    const contentArray = [
-      {
-        type: "text",
-        text: "Please analyze these multiple roof images to provide a comprehensive assessment with measurements. Use multiple images to improve measurement accuracy through triangulation.Return your entire analysis as a valid JSON object."
+ // Create user prompt based on available location and property data
+    let userPrompt = "Please analyze this roofing shingle image and provide a detailed professional assessment in the requested JSON format.";
+    
+    // Add location context if available
+    if (location) {
+      userPrompt += ` The property is located at coordinates ${location.coordinates.latitude}, ${location.coordinates.longitude}`;
+      
+      if (location.address) {
+        userPrompt += ` near ${location.address}`;
       }
-    ];
-    
-    // Add each image to the content array
-    processedImages.forEach((imgBase64, index) => {
-      contentArray.push({
-        type: "image_url",
-        image_url: {
-          url: `data:image/jpeg;base64,${imgBase64}`,
-          detail: "high"
-        }
-      });
-    });
-    
-   // Create the OpenAI API request payload
-    const payload = {
-  model: "gpt-4o",
-  messages: [
-    { role: "system", content: enhancedSystemPrompt },
-    {
-      role: "user",
-      content: [
-        { type: "text", text: "Please analyze these multiple roof images and provide a detailed professional assessment in the requested JSON format. Use all visible images to improve accuracy in your assessment." },
-        ...processedImages.map(image => ({
-          type: "image_url",
-          image_url: { url: `data:image/jpeg;base64,${image}`, detail: "high" }
-        }))
-      ]
+      
+      // Add regional context based on location
+      userPrompt += `. Consider local building codes, typical weather patterns, and common roofing materials for this region in your assessment.`;
     }
-  ],
-  max_tokens: 3000,
-  temperature: 0.2
-};
+    
+    // Add property context if available
+    if (propertyData) {
+      userPrompt += ` The property is a ${propertyData.type || 'residential building'}`;
+      
+      if (propertyData.yearBuilt) {
+        userPrompt += ` built in ${propertyData.yearBuilt}`;
+      }
+      
+      if (propertyData.squareFootage) {
+        userPrompt += ` with approximately ${propertyData.squareFootage} square feet`;
+      }
+      
+      userPrompt += `. Please consider this information in your assessment of the roof's condition and repair recommendations.`;
+    }
+    
+    console.log("Enhanced user prompt with location and property context");
+    
+    // Create the OpenAI API request payload with enhanced prompt
+    const payload = {
+      model: "gpt-4o",
+      messages: [
+        {
+          role: "system",
+          content: enhancedSystemPrompt
+        },
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: userPrompt
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: `data:image/jpeg;base64,${image}`,
+                detail: "high"
+              }
+            }
+          ]
+        }
+      ],
+      max_tokens: 3000,  // Increased token limit for more comprehensive response
+      temperature: 0.2   // Lower temperature for more consistent output
+    };
+    
+    // Call the OpenAI API
+    try {
+      console.log("Sending request to OpenAI API");
+      const response = await axios.post(
+        'https://api.openai.com/v1/chat/completions',
+        payload,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          }
+        }
+      );
+      
+      console.log("OpenAI API response received successfully");
     
     // Call the OpenAI API with extended timeout
     try {
