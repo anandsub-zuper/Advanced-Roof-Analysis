@@ -145,6 +145,7 @@ button:disabled {
     display: flex;
     border-bottom: 1px solid #eaeaea;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .tab-btn {
@@ -193,6 +194,87 @@ button:disabled {
     white-space: pre-wrap;
 }
 
+/* Result Cards */
+.result-card {
+    border: 1px solid #eaeaea;
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.result-card h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.result-card h4 {
+    margin: 15px 0 8px;
+    color: #2c3e50;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.condition-excellent { color: #27ae60; font-weight: bold; }
+.condition-good { color: #2ecc71; font-weight: bold; }
+.condition-fair { color: #f39c12; font-weight: bold; }
+.condition-poor { color: #e67e22; font-weight: bold; }
+.condition-critical { color: #e74c3c; font-weight: bold; }
+.condition-unknown { color: #95a5a6; font-style: italic; }
+
+.recommendation-no-action-needed { color: #27ae60; font-weight: bold; }
+.recommendation-minor-repairs { color: #3498db; font-weight: bold; }
+.recommendation-major-repairs { color: #f39c12; font-weight: bold; }
+.recommendation-partial-replacement { color: #e67e22; font-weight: bold; }
+.recommendation-full-replacement { color: #e74c3c; font-weight: bold; }
+.recommendation-unknown { color: #95a5a6; font-style: italic; }
+
+.urgency-none { color: #27ae60; }
+.urgency-low { color: #3498db; }
+.urgency-moderate { color: #f39c12; }
+.urgency-high { color: #e67e22; }
+.urgency-emergency { color: #e74c3c; font-weight: bold; }
+.urgency-unknown { color: #95a5a6; font-style: italic; }
+
+.measurement-item {
+    margin-bottom: 15px;
+}
+
+.measurement-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.confidence {
+    font-size: 14px;
+    color: #7f8c8d;
+}
+
+.damage-types ul {
+    list-style-type: none;
+    padding-left: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.damage-types li {
+    background-color: #f5f5f5;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.special-considerations ul {
+    padding-left: 20px;
+}
+
 /* Loading Overlay */
 .loading-overlay {
     position: fixed;
@@ -228,4 +310,25 @@ footer {
     text-align: center;
     margin-top: 50px;
     color: #7f8c8d;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .upload-section, 
+    .results-section {
+        padding: 20px;
+    }
+    
+    .tabs {
+        overflow-x: auto;
+    }
+    
+    .tab-btn {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
 }
