@@ -1,5 +1,5 @@
 // API Configuration
-const API_URL = 'https://roof-intelligence-6a30489ce677.herokuapp.com/';
+const API_URL = 'https://roof-intelligence-6a30489ce677.herokuapp.com';
 
 // DOM Elements
 const dropArea = document.getElementById('dropArea');
