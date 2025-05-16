@@ -488,7 +488,7 @@ Ensure the entire response is properly formatted as valid JSON.
     const contentArray = [
       {
         type: "text",
-        text: "Please analyze these multiple roof images to provide a comprehensive assessment with measurements. Use multiple images to improve measurement accuracy through triangulation."
+        text: "Please analyze these multiple roof images to provide a comprehensive assessment with measurements. Use multiple images to improve measurement accuracy through triangulation.Return your entire analysis as a valid JSON object."
       }
     ];
     
@@ -504,21 +504,34 @@ Ensure the entire response is properly formatted as valid JSON.
     });
     
     // Create the OpenAI API request payload
-    const payload = {
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: enhancedSystemPrompt
-        },
-        {
-          role: "user",
-          content: contentArray
-        }
-      ],
-      max_tokens: 4000,
-      temperature: 0.2
-    };
+      const payload = {
+    model: "gpt-4o",
+    messages: [
+      {
+        role: "system",
+        content: enhancedSystemPrompt
+      },
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: userPrompt
+          },
+          // Add all images to the content array
+          ...processedImages.map(image => ({
+            type: "image_url",
+            image_url: {
+              url: `data:image/jpeg;base64,${image}`,
+              detail: "high"
+            }
+          }))
+        ]
+      }
+    ],
+    max_tokens: 3000,
+    temperature: 0.2
+  };
     
     // Call the OpenAI API with extended timeout
     try {
