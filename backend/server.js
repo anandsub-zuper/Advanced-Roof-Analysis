@@ -509,33 +509,23 @@ Start your response with '{' and end with '}' and ensure it can be parsed by JSO
     });
     
    // Create the OpenAI API request payload
-const payload = {
-  model: "gpt-4o",  // Keep the same model that works
+    const payload = {
+  model: "gpt-4o",
   messages: [
-    {
-      role: "system",
-      content: enhancedSystemPrompt
-    },
+    { role: "system", content: enhancedSystemPrompt },
     {
       role: "user",
       content: [
-        {
-          type: "text",
-          text: "Please analyze these multiple roof images and provide a detailed professional assessment in the requested JSON format. Use all visible images to improve accuracy in your assessment."
-        },
-        // Add each image in sequence
+        { type: "text", text: "Please analyze these multiple roof images and provide a detailed professional assessment in the requested JSON format. Use all visible images to improve accuracy in your assessment." },
         ...processedImages.map(image => ({
           type: "image_url",
-          image_url: {
-            url: `data:image/jpeg;base64,${image}`,
-            detail: "high"
-          }
+          image_url: { url: `data:image/jpeg;base64,${image}`, detail: "high" }
         }))
       ]
     }
   ],
-  max_tokens: 3000,  // Keep same token limit
-  temperature: 0.2   // Keep same temperature
+  max_tokens: 3000,
+  temperature: 0.2
 };
     
     // Call the OpenAI API with extended timeout
