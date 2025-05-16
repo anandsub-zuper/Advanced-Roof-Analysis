@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roof Intelligence Analyzer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Roof Intelligence Analyzer</h1>
+            <p>Advanced roof analysis using AI</p>
+        </header>
+        
+        <main>
+            <section class="upload-section">
+                <h2>Upload Roof Images</h2>
+                <p>Upload up to 15 images of the roof from different angles</p>
+                <div class="drop-area" id="dropArea">
+                    <input type="file" id="fileInput" multiple accept="image/*" hidden>
+                    <div class="drop-message">
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p>Drag & drop your images here or <span class="browse-link">browse files</span></p>
+                    </div>
+                </div>
+                <div class="image-preview" id="imagePreview"></div>
+                <div class="actions">
+                    <button id="analyzeBtn" disabled>Analyze Roof</button>
+                </div>
+            </section>
+            
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <h2>Analysis Results</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="materials">Materials</button>
+                    <button class="tab-btn" data-tab="damage">Damage</button>
+                    <button class="tab-btn" data-tab="measurements">Measurements</button>
+                    <button class="tab-btn" data-tab="repairs">Repairs</button>
+                    <button class="tab-btn" data-tab="json">JSON Data</button>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="materials"></div>
+                    <div class="tab-pane" id="damage"></div>
+                    <div class="tab-pane" id="measurements"></div>
+                    <div class="tab-pane" id="repairs"></div>
+                    <div class="tab-pane" id="json"></div>
+                </div>
+            </section>
+            
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="spinner"></div>
+                <p id="loadingMessage">Analyzing roof images...</p>
+            </div>
+        </main>
+        
+        <footer>
+            <p>© 2025 Roof Intelligence</p>
+        </footer>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
