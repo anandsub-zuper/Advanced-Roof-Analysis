@@ -1,15 +1,14 @@
-// advancedServer.js
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3002; // Use different port from main server
+const PORT = process.env.PORT || 3002;
 
-// Configure CORS to allow requests from your Netlify domain
+// Configure CORS to allow requests from your GitHub Pages domain
 app.use(cors({
-  origin: '*',
+  origin: ['*'],
   methods: ['POST', 'GET', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -18,7 +17,7 @@ app.use(cors({
 app.options('*', cors());
 
 // Middleware for parsing JSON (with higher limit for large images)
-app.use(express.json({ limit: '100mb' })); // Increased limit for multiple images
+app.use(express.json({ limit: '100mb' }));
 
 // Function to validate image format
 function validateImageFormat(base64Image) {
@@ -544,23 +543,39 @@ Ensure the entire response is properly formatted as valid JSON.
       let processedData = response.data;
       
       try {
-        // Extract the JSON content from the response text if needed
+        // Extract the JSON content from the response text
         const responseContent = response.data.choices[0].message.content;
+        
+        // Log the first 200 characters to see what we're getting
+        console.log("Response content preview:", responseContent.substring(0, 200));
+        
         if (typeof responseContent === 'string') {
-          // Try to find JSON content within the string
+          // Try to find JSON content within the string using a more flexible pattern
           const jsonMatch = responseContent.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             try {
               const jsonContent = JSON.parse(jsonMatch[0]);
               processedData = {
-                ...response.data,
+                rawResponse: response.data,
                 parsedResults: jsonContent,
                 imageCount: processedImages.length
               };
               console.log("Successfully parsed JSON content from multi-image response");
             } catch (parseError) {
               console.warn("Could not parse JSON match:", parseError);
+              // Include the raw content in the response
+              processedData = {
+                ...response.data,
+                rawContent: responseContent,
+                parseError: parseError.message
+              };
             }
+          } else {
+            console.warn("No JSON structure found in response");
+            processedData = {
+              ...response.data,
+              rawContent: responseContent
+            };
           }
         }
       } catch (jsonError) {
