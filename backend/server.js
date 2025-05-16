@@ -98,10 +98,13 @@ app.post('/api/analyze-roof-multiple', async (req, res) => {
     
     // Enhanced prompt for OpenAI Vision API with advanced measurement capabilities
     const enhancedSystemPrompt = `
-You are an expert roof inspector specializing in shingle identification, damage assessment, and precision measurement with 30 years of experience.
+You are an expert roof inspector specializing in shingle identification and damage assessment with 30 years of experience.
+
+MULTI-IMAGE ANALYSIS INSTRUCTIONS:
+You will be provided with multiple images of the same roof from different angles. Use all images to create a single comprehensive assessment. Where images show different sections of the roof, incorporate details from all visible sections. Where images show the same area from different angles, use the multiple perspectives to improve accuracy in your assessment.
 
 TASK: 
-Analyze the uploaded roof image(s) to provide a detailed professional assessment including accurate measurements derived solely from visual analysis.
+Analyze the uploaded roof images to provide a detailed professional assessment. When considering local building codes and common roofing materials, use your best judgment based on common regional practices.
 
 REQUIRED OUTPUT FORMAT:
 Respond with a JSON object containing these sections:
@@ -481,7 +484,9 @@ RESPONSE QUALITY CONSIDERATIONS:
 - Use precise terminology for roofing elements and their conditions
 - Explain your measurement methodology for key dimensions
 
-Ensure the entire response is properly formatted as valid JSON.
+CRITICAL: Your entire response must be a valid JSON object without any explanatory text before or after.
+Do not include any markdown formatting, explanations, or non-JSON content.
+Start your response with '{' and end with '}' and ensure it can be parsed by JSON.parse().
 `;
     
     // Create the content array with all images
@@ -505,7 +510,7 @@ Ensure the entire response is properly formatted as valid JSON.
     
    // Create the OpenAI API request payload
 const payload = {
-  model: "gpt-4o",
+  model: "gpt-4o",  // Keep the same model that works
   messages: [
     {
       role: "system",
@@ -513,11 +518,24 @@ const payload = {
     },
     {
       role: "user",
-      content: contentArray  // Use your existing contentArray that already includes text and images
+      content: [
+        {
+          type: "text",
+          text: "Please analyze these multiple roof images and provide a detailed professional assessment in the requested JSON format. Use all visible images to improve accuracy in your assessment."
+        },
+        // Add each image in sequence
+        ...processedImages.map(image => ({
+          type: "image_url",
+          image_url: {
+            url: `data:image/jpeg;base64,${image}`,
+            detail: "high"
+          }
+        }))
+      ]
     }
   ],
-  max_tokens: 3000,
-  temperature: 0.2
+  max_tokens: 3000,  // Keep same token limit
+  temperature: 0.2   // Keep same temperature
 };
     
     // Call the OpenAI API with extended timeout
